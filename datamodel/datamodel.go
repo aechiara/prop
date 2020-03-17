@@ -1,3 +1,18 @@
+/*
+Copyright © 2020 Alex Eduardo Chiaranda <aechiara@gmail.com>
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
 package datamodel
 
 import (
@@ -61,6 +76,24 @@ func (c *ConfigFile) ChangeValue(key string, value string) error {
 	c.Lines = append(c.Lines, temp...)
 
 	return nil
+}
+
+func (c *ConfigFile) CheckValue(key string) (string, error) {
+	found := false
+	value := ""
+	for _, s := range configFile.Lines {
+		if s.Key == key {
+			found = true
+			value = s.Value
+			break
+		}
+	}
+
+	if !found {
+		return "", fmt.Errorf("The key [%s] was not found", key)
+	}
+
+	return value, nil
 }
 
 func (c *ConfigFile) AddLine(ln ConfigLine) error {
