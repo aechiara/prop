@@ -5,6 +5,14 @@
 
 The Goal for this project is to have a fast, easy to use and reliable way to check, edit and add values to a properties file
 
+## Binaries
+
+The binaries can be downloaded form the URLs bellow
+
+- [https://storage.googleapis.com/cloudbackup-apps/prop-linux.zip](Linux)
+- [https://storage.googleapis.com/cloudbackup-apps/prop-macos.zip] (MacOS)
+- [https://storage.googleapis.com/cloudbackup-apps/prop-windows.zip](Windows)
+
 
 ## Building
 
