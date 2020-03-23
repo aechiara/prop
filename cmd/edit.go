@@ -62,7 +62,7 @@ var editCmd = &cobra.Command{
 		}
 		defer fo.Close()
 
-		err = configFile.WriteToFile(fo)
+		err = configFile.Write(fo)
 
 		return err
 	},

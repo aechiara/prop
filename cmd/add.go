@@ -76,8 +76,10 @@ var addCmd = &cobra.Command{
 		// if key was NOT FOUND
 		if err == nil && isForced {
 			err = configFile.ChangeValue(props[0], props[1])
+			fmt.Printf("Key [%s] FORCED CHANGE in [%s]\n", props[0], fileName)
 		} else {
 			err = configFile.AddLine(confLine)
+			fmt.Printf("Key [%s] added in [%s]\n", props[0], fileName)
 		}
 
 		fo, err := os.Create("saida.txt")
@@ -86,7 +88,7 @@ var addCmd = &cobra.Command{
 		}
 		defer fo.Close()
 
-		err = configFile.WriteToFile(fo)
+		err = configFile.Write(fo)
 
 		return err
 	},

@@ -16,8 +16,10 @@ limitations under the License.
 package datamodel
 
 import (
+	"bufio"
 	"fmt"
 	"io"
+	"strings"
 )
 
 type ConfigLine struct {
@@ -38,7 +40,43 @@ func New() *ConfigFile {
 	return configFile
 }
 
-func (c *ConfigFile) WriteToFile(fo io.Writer) error {
+func (c *ConfigFile) Read(reader bufio.Reader) error {
+
+	totalLinhas := 0
+
+	for {
+		line, err := reader.ReadString('\n')
+		if err != nil {
+			break
+		}
+
+		totalLinhas++
+
+		var key, value string
+		b := []byte(line)
+		// tratar # e nova linha e caracteres especiais no inicio dos arquivos
+		// ef bb bf 23 23 23
+		if len(line) > 2 && b[0] != 239 && !strings.HasPrefix(line, `#`) {
+			// log.Print(line)
+			splitted := strings.Split(line, "=")
+			key, value = strings.TrimSpace(splitted[0]), strings.TrimSpace(splitted[1])
+			// log.Printf("key: [%s] - value: [%s]", key, value)
+		}
+
+		configLine := ConfigLine{
+			LineNo: totalLinhas,
+			Line:   line,
+			Key:    key,
+			Value:  value,
+		}
+
+		c.AddLine(configLine)
+	}
+
+	return nil
+}
+
+func (c *ConfigFile) Write(fo io.Writer) error {
 	var lineToWrite string
 	for _, k := range c.Lines {
 		// log.Printf("[%d] - Key: [%s] => [%s]\n", k.LineNo, k.Key, k.Value)

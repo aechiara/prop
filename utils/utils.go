@@ -18,9 +18,7 @@ package utils
 import (
 	"bufio"
 	"fmt"
-	"io"
 	"os"
-	"strings"
 
 	"github.com/aechiara/prop/datamodel"
 )
@@ -48,48 +46,6 @@ func ReadConfig(configFile string, confStruct *datamodel.ConfigFile) error {
 	defer file.Close()
 
 	reader := bufio.NewReader(file)
-	var line string
-	totalLinhas := 0
 
-	for {
-		line, err = reader.ReadString('\n')
-		if err != nil {
-			break
-		}
-
-		totalLinhas++
-
-		var key, value string
-		b := []byte(line)
-		// tratar # e nova linha e caracteres especiais no inicio dos arquivos
-		// ef bb bf 23 23 23
-		if len(line) > 2 && b[0] != 239 && !strings.HasPrefix(line, `#`) {
-			// log.Print(line)
-			splitted := strings.Split(line, "=")
-			key, value = strings.TrimSpace(splitted[0]), strings.TrimSpace(splitted[1])
-			// log.Printf("key: [%s] - value: [%s]", key, value)
-		}
-
-		configLine := datamodel.ConfigLine{
-			LineNo: totalLinhas,
-			Line:   line,
-			Key:    key,
-			Value:  value,
-		}
-
-		confStruct.AddLine(configLine)
-
-		// fmt.Printf(" > Read %d characters\n", len(line))
-		// fmt.Printf("line: [%s]\n", line)
-
-	}
-
-	if err != io.EOF {
-		fmt.Printf(" > Failed!: %v\n", err)
-	}
-
-	// log.Printf("Total de linhas: [%d]\n", totalLinhas)
-	// log.Printf("Total de linhas: [%d]\n", len(confStruct.Lines))
-
-	return nil
+	return confStruct.Read(*reader)
 }
