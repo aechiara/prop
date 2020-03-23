@@ -2,13 +2,11 @@
 
 
 ## Goal
--------
 
 The Goal for this project is to have a fast, easy to use and reliable way to check, edit and add values to a properties file
 
 
 ## Building
--------
 
 - clone the repository and run
 
@@ -29,4 +27,4 @@ and a ```prop.exe``` file will be generated
 Options are:
 - linux
 - windows
-- mac
+- macos
