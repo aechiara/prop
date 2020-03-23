@@ -19,6 +19,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"time"
 
 	"github.com/aechiara/prop/datamodel"
 )
@@ -48,4 +49,15 @@ func ReadConfig(configFile string, confStruct *datamodel.ConfigFile) error {
 	reader := bufio.NewReader(file)
 
 	return confStruct.Read(*reader)
+}
+
+//GenBackupName generates a backup name for a file
+// using the timestamp
+func GenBackupName(str string) string {
+	t := time.Now()
+
+	ft := fmt.Sprintf("%d%d%d%d%d%d", t.Year(), t.Month(), t.Day(),
+		t.Hour(), t.Minute(), t.Second())
+
+	return fmt.Sprintf("%s.bak.%s", str, ft)
 }

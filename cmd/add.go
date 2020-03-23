@@ -1,3 +1,4 @@
+// Package cmd is the root for command line options
 /*
 Copyright © 2020 Alex Eduardo Chiaranda <aechiara@gmail.com>
 
@@ -29,9 +30,9 @@ import (
 var addCmd = &cobra.Command{
 	Use:   "add config_file_path key_to_add:new_value",
 	Short: "Adds a new property to a properties file",
-	Long: `Adds a new property to a properties file.
-	If the property already exists, the value WILL NOT be changed,
-	unless a -f|--force flag is passed.`,
+	Long: `Adds a new property to an existing properties file.
+If the property already exists, the value WILL NOT be changed and an error will be returned,
+unless a [ -f|--force ] flag is passed.`,
 	Args: cobra.MinimumNArgs(2),
 	RunE: func(cmd *cobra.Command, args []string) error {
 
@@ -40,7 +41,12 @@ var addCmd = &cobra.Command{
 			return fmt.Errorf("Could not get Flag")
 		}
 
-		fileName := args[0]
+		backup, err := cmd.Flags().GetBool("backup")
+		if err != nil {
+			return fmt.Errorf("Could not get Flag")
+		}
+
+		filename := args[0]
 		props := strings.Split(args[1], ":")
 		if len(args) > 2 || len(props) != 2 || len(props[1]) == 0 || len(props[0]) == 0 {
 			return fmt.Errorf("Wrong parameter format, the format shoud be key:value")
@@ -51,19 +57,19 @@ var addCmd = &cobra.Command{
 
 		configFile := datamodel.New()
 
-		err = utils.ReadConfig(fileName, configFile)
+		err = utils.ReadConfig(filename, configFile)
 		if err != nil {
-			return fmt.Errorf("Error: %v\n", err)
+			return fmt.Errorf("error: %v", err)
 		}
 
 		if err != nil {
-			return fmt.Errorf("Error inserting new Property: %v\n", err)
+			return fmt.Errorf("error inserting new Property: %v", err)
 		}
 
 		_, err = configFile.CheckValue(props[0])
 		// if key was FOUND and isForced not set
 		if err == nil && !isForced {
-			return fmt.Errorf("Key [%s] already exists on file [%s], use --force to overwrite the property\n", props[0], fileName)
+			return fmt.Errorf("key [%s] already exists on file [%s], use --force to overwrite the property", props[0], filename)
 		}
 
 		confLine := datamodel.ConfigLine{
@@ -76,13 +82,21 @@ var addCmd = &cobra.Command{
 		// if key was NOT FOUND
 		if err == nil && isForced {
 			err = configFile.ChangeValue(props[0], props[1])
-			fmt.Printf("Key [%s] FORCED CHANGE in [%s]\n", props[0], fileName)
+			fmt.Printf("Key [%s] FORCED CHANGE in [%s]\n", props[0], filename)
 		} else {
 			err = configFile.AddLine(confLine)
-			fmt.Printf("Key [%s] added in [%s]\n", props[0], fileName)
+			fmt.Printf("Key [%s] added in [%s]\n", props[0], filename)
 		}
 
-		fo, err := os.Create("saida.txt")
+		if backup {
+			backupFilename := utils.GenBackupName(filename)
+			err = os.Rename(filename, backupFilename)
+			if err != nil {
+				return fmt.Errorf("Unable to Create Backup File: %v", err)
+			}
+		}
+
+		fo, err := os.Create(filename)
 		if err != nil {
 			return fmt.Errorf("Unable to create output file: %v", err)
 		}
@@ -107,4 +121,5 @@ func init() {
 	// is called directly, e.g.:
 	// addCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 	addCmd.Flags().BoolP("force", "f", false, "If the key already exists, replace with new value")
+	addCmd.Flags().BoolP("backup", "b", false, "Creates a backup from original file")
 }

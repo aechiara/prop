@@ -1,3 +1,4 @@
+// Package cmd is the root for command line options
 /*
 Copyright © 2020 Alex Eduardo Chiaranda <aechiara@gmail.com>
 
@@ -37,12 +38,12 @@ var checkCmd = &cobra.Command{
 
 		err := utils.ReadConfig(fileName, configFile)
 		if err != nil {
-			return fmt.Errorf("Error: %v\n", err)
+			return fmt.Errorf("error: %v", err)
 		}
 
 		value, err := configFile.CheckValue(args[1])
 		if err != nil {
-			return fmt.Errorf("Key [%s] was not found on file [%s]\n", args[1], fileName)
+			return fmt.Errorf("key [%s] was not found on file [%s]", args[1], fileName)
 		}
 		fmt.Printf("Key [%s] value is [%s]\n", args[1], value)
 

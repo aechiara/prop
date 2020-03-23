@@ -1,3 +1,4 @@
+// Package cmd is the root for command line options
 /*
 Copyright © 2020 NAME HERE <EMAIL ADDRESS>
 

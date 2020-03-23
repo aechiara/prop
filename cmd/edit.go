@@ -1,3 +1,4 @@
+// Package cmd is the root for command line options
 /*
 Copyright © 2020 Alex Eduardo Chiaranda <aechiara@gmail.com>
 
@@ -27,13 +28,19 @@ import (
 
 // editCmd represents the edit command
 var editCmd = &cobra.Command{
-	Use:   "edit config_file_path key_to_find:new_value",
+	Use:   "edit [ -i | --inplace ] config_file_path key_to_find:new_value",
 	Short: "Edit a configuration on a properties file",
-	Long: `Edit a configuration on a properties file, if the property does not exists, returns an error.
-	No new properties are created, for that you should use the add command.`,
+	Long: `Edit a configuration on a properties file.
+The result file will be written to the Stdout unless a -i flag is passed, 
+then the result will be written to the original file.
+
+If the property does not exist, returns an error.
+No new properties are created, for that you should use the add command.`,
 	Args:                  cobra.MinimumNArgs(2),
 	DisableFlagsInUseLine: true,
 	RunE: func(cmd *cobra.Command, args []string) error {
+
+		inplace, err := cmd.Flags().GetBool("inplace")
 
 		props := strings.Split(args[1], ":")
 		if len(args) > 2 || len(props) != 2 || len(props[1]) == 0 || len(props[0]) == 0 {
@@ -42,23 +49,26 @@ var editCmd = &cobra.Command{
 
 		// fmt.Printf("[%s] - [%s]:[%s]\n", args[0], props[0], props[1])
 
-		fileName := args[0]
+		filename := args[0]
 
 		configFile := datamodel.New()
 
-		err := utils.ReadConfig(fileName, configFile)
+		err = utils.ReadConfig(filename, configFile)
 		if err != nil {
-			return fmt.Errorf("Error: %v\n", err)
+			return fmt.Errorf("error: %v", err)
 		}
 
 		err = configFile.ChangeValue(props[0], props[1])
 		if err != nil {
-			return fmt.Errorf("Key [%s] was not found on file [%s]\n", args[0], fileName)
+			return fmt.Errorf("key [%s] was not found on file [%s]", props[0], filename)
 		}
 
-		fo, err := os.Create("saida.txt")
-		if err != nil {
-			return fmt.Errorf("Unable to create output file: %v", err)
+		fo := os.Stdout
+		if inplace {
+			fo, err = os.Create(filename)
+			if err != nil {
+				return fmt.Errorf("unable to create output file: %v", err)
+			}
 		}
 		defer fo.Close()
 
@@ -79,4 +89,5 @@ func init() {
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
 	// editCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	editCmd.Flags().BoolP("inplace", "i", false, "Edit File INPLACE, changing the input file, otherwise writes to Stout")
 }
