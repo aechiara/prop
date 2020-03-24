@@ -23,18 +23,18 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var cfgFile string
+// var cfgFile string
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "prop",
 	Short: "Check or change ",
-	Long: `This application was built to make easier to check or
-edit any configuration in a properties file	
+	Long: `This application was built to make fast, easy to use and reliable way to check, 
+edit and add values to a properties file
 	`,
 	// Uncomment the following line if your bare application
 	// has an action associated with it:
-	//	Run: func(cmd *cobra.Command, args []string) { },
+	// Run: func(cmd *cobra.Command, args []string) {},
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.

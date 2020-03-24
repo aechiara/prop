@@ -9,9 +9,10 @@ The Goal for this project is to have a fast, easy to use and reliable way to che
 
 The binaries can be downloaded form the URLs bellow
 
-- [Linux](https://storage.googleapis.com/cloudbackup-apps/prop-linux.zip)
-- [MacOS](https://storage.googleapis.com/cloudbackup-apps/prop-macos.zip)
-- [Windows](https://storage.googleapis.com/cloudbackup-apps/prop-windows.zip)
+### Version 0.8.1
+- [Linux](https://storage.googleapis.com/cloudbackup-apps/prop-linux-0.8.1.zip)
+- [MacOS](https://storage.googleapis.com/cloudbackup-apps/prop-macos-0.8.1.zip)
+- [Windows](https://storage.googleapis.com/cloudbackup-apps/prop-windows-0.8.1.zip)
 
 
 ## Building

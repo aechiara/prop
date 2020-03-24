@@ -1,6 +1,5 @@
-saida.txt
-LocalConfig.txt
-
+.DS_Store
 prop
 prop-linux
 prop.exe
+dist/
