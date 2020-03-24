@@ -17,13 +17,13 @@ The binaries can be downloaded form the URLs bellow
 
 ## Building
 
-- clone the repository and run
+clone the repository and run
 
 ```sh
 $ make
 ```
 
-### Building for Other SOs 
+### Building for Other OSs 
 
 If you run make on your platform, a native binary will be generated for your platform, however, it is possible to build for another platforms, let's say you are on a Linux Machine, and want to build a Windows Executable, you can run:
 
